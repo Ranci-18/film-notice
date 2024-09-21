@@ -1,0 +1,12 @@
+{
+  "name": "film-notice",
+  "version": "1.0.0",
+  "description": "An app that sends me new film releases to my whatsApp number.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Frank",
+  "license": "ISC"
+}
