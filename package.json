@@ -2,11 +2,12 @@
   "name": "film-notice",
   "version": "1.0.0",
   "description": "An app that sends me new film releases to my whatsApp number.",
-  "main": "index.js",
+  "main": "dist/fetchNewReleases.js",
+  "type": "commonjs",
   "scripts": {
-    "dev": "vercel dev",
+    "dev": "ts-node api/fetchNewReleases.ts",
     "build": "tsc",
-    "start": "node dist/api/fetchNewReleases.js"
+    "start": "node dist/fetchNewReleases.js"
   },
   "keywords": [],
   "author": "Frank",
@@ -15,11 +16,12 @@
     "@types/node": "^22.5.5",
     "@types/node-fetch": "^2.6.11",
     "@types/twilio": "^3.19.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "twilio": "^5.3.1"
   }
 }
