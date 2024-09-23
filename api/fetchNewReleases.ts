@@ -11,6 +11,7 @@ const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID!;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN!;
 const client = twilio(twilioAccountSid, twilioAuthToken);
 let movieList: any[] = [];
+let tvShowList: any[] = [];
 
 async function sendWhatsAppNotification(message: string): Promise<void> {
     try {
@@ -51,4 +52,37 @@ async function fetchNewReleases(): Promise<void> {
         .catch((err: any) => console.error(err));
 }
 
+function getUSTvShowsAiringToday() {
+    const url = 'https://api.themoviedb.org/3/tv/airing_today';
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${process.env.API_READ_ACCESS_TOKEN}`
+        }
+    };
+
+    fetch(url, options)
+        .then((res: import('node-fetch').Response) => res.json())
+        .then((json: any) => {
+            const movies = json.results;
+
+            // Filter only U.S. shows and add to movieList
+            movies.forEach((movie: any) => {
+                if (movie.origin_country.includes('US')) {
+                    tvShowList.push(movie.name); // Assuming `name` is the title for TV shows
+                }
+            });
+        })
+        .then(() => {
+            // Create a message with a top-down list of new shows
+            const message = `New U.S. TV shows airing today:\n${tvShowList.join('\n')}`;
+            // console.log(tvShowList);
+            // Send the WhatsApp notification
+            return sendWhatsAppNotification(message);
+        })
+        .catch((err: any) => console.error('Error fetching or sending data:', err));
+}
+
 fetchNewReleases();
+getUSTvShowsAiringToday();
