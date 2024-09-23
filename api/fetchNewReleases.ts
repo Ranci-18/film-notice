@@ -10,13 +10,19 @@ dotenv.config();
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID!;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN!;
 const client = twilio(twilioAccountSid, twilioAuthToken);
+let movieList: any[] = [];
 
 async function sendWhatsAppNotification(message: string): Promise<void> {
-    await client.messages.create({
-        from: process.env.WHATSAPP_FROM!,
-        to: process.env.WHATSAPP_TO!,
-        body: message
-    });
+    try {
+        await client.messages.create({
+            from: process.env.WHATSAPP_FROM!,
+            to: process.env.WHATSAPP_TO!,
+            body: message
+        });
+    } catch (err) {
+        console.error(err);
+    }
+    
 }
 
 async function fetchNewReleases(): Promise<void> {
@@ -35,9 +41,12 @@ async function fetchNewReleases(): Promise<void> {
         .then((json: any) => {
             const movies = json.results;
             movies.forEach((movie: any) => {
-                const message = `New movie release: ${movie.title}`;
-                sendWhatsAppNotification(message);
+                movieList.push(movie.title);
             });
+        })
+        .then(() => {
+            const message = `New movies released:\n${movieList.join('\n')}`;
+            sendWhatsAppNotification(message);
         })
         .catch((err: any) => console.error(err));
 }
